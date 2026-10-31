@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KennyHack Shop</title>
+    <!-- Подключаем официальный скрипт Телеграма -->
+    <script src="https://telegram.org"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #181818);
+            color: var(--tg-theme-text-color, #ffffff);
+            margin: 0; padding: 15px; text-align: center;
+        }
+        h1 { color: #0088cc; font-size: 22px; margin-bottom: 5px; }
+        .subtitle { font-size: 14px; color: #aaaaaa; margin-bottom: 20px; }
+        .tabs { display: flex; justify-content: space-around; margin-bottom: 20px; }
+        .tab-btn {
+            background: #242424; color: white; border: 1px solid #333;
+            padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 45%;
+        }
+        .tab-btn.active { background: #0088cc; border-color: #0088cc; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .cheat-card {
+            background: var(--tg-theme-secondary-bg-color, #202020);
+            border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: left;
+            border: 1px solid #2d2d2d;
+        }
+        .cheat-title { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
+        .cheat-desc { font-size: 13px; color: #b2b2b2; margin-bottom: 10px; }
+        .download-btn {
+            background: #0088cc; color: white; border: none; width: 100%;
+            padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🤖 KennyHack Mobile App</h1>
+    <div class="subtitle">Выбирай софт прямо в интерфейсе приложения</div>
+
+    <!-- Переключатель вкладок -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('pc')">🖥️ Читы на ПК</button>
+        <button class="tab-btn" onclick="switchTab('phone')">📱 На телефон</button>
+    </div>
+
+    <!-- Раздел ПК -->
+    <div id="pc-section" class="content-section active">
+        <div class="cheat-card">
+            <div class="cheat-title">👵 Granny PC Mod Menu</div>
+            <div class="cheat-desc">Активация в игре на клавишу F1. Чит полностью безопасен и обходит проверку файлов.</div>
+            <button class="download-btn" onclick="sendAction('Granny PC')">Скачать софт</button>
+        </div>
+    </div>
+
+    <!-- Раздел Телефон -->
+    <div id="phone-section" class="content-section">
+        <div class="cheat-card">
+            <div class="cheat-title">🤖 Granny Android Cheat (.apk)</div>
+            <div class="cheat-desc">Модифицированный APK-файл со встроенным мод-меню (бессмертие, невидимость).</div>
+            <button class="download-btn" onclick="sendAction('Granny Android')">Скачать APK</button>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand(); // Разворачиваем на весь экран
+
+        // Функция переключения вкладок
+        function switchTab(type) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+
+            if(type === 'pc') {
+                event.target.classList.add('active');
+                document.getElementById('pc-section').classList.add('active');
+            } else {
+                event.target.classList.add('active');
+                document.getElementById('phone-section').classList.add('active');
+            }
+        }
+
+        // Функция отправки действия обратно в чат боту
+        function sendAction(cheatName) {
+            tg.sendData("download_" + cheatName); // Отправляем техническую строку боту
+            tg.close(); // Закрываем мини-приложение
+        }
+    </script>
+</body>
+</html>
