@@ -3,92 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KennyHack Shop</title>
-    <!-- Подключаем официальный скрипт Телеграма -->
+    <title>KennyHack Premium</title>
     <script src="https://telegram.org"></script>
     <style>
+        /* Стильный тёмный дизайн в тему Telegram */
         body {
-            font-family: Arial, sans-serif;
-            background-color: var(--tg-theme-bg-color, #181818);
-            color: var(--tg-theme-text-color, #ffffff);
-            margin: 0; padding: 15px; text-align: center;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #131924;
+            color: #ffffff;
+            margin: 0; padding: 15px;
+            overflow-x: hidden;
         }
-        h1 { color: #0088cc; font-size: 22px; margin-bottom: 5px; }
-        .subtitle { font-size: 14px; color: #aaaaaa; margin-bottom: 20px; }
-        .tabs { display: flex; justify-content: space-around; margin-bottom: 20px; }
+        
+        /* Шапка приложения */
+        .header {
+            background: linear-gradient(135deg, #0088cc, #00c6ff);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+        }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }
+        .header p { margin: 5px 0 0 0; font-size: 13px; opacity: 0.9; }
+
+        /* Переключатель вкладок */
+        .tabs {
+            display: flex;
+            background: #1e2633;
+            padding: 5px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
         .tab-btn {
-            background: #242424; color: white; border: 1px solid #333;
-            padding: 10px 20px; border-radius: 8px; cursor: pointer; width: 45%;
+            background: transparent; color: #7a8b9e; border: none;
+            padding: 12px; border-radius: 9px; cursor: pointer;
+            font-weight: bold; font-size: 14px; width: 50%;
+            transition: all 0.2s ease;
         }
-        .tab-btn.active { background: #0088cc; border-color: #0088cc; }
+        .tab-btn.active {
+            background: #0088cc; color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 136, 204, 0.4);
+        }
+
+        /* Контент вкладок */
         .content-section { display: none; }
-        .content-section.active { display: block; }
+        .content-section.active { display: block; animation: fadeIn 0.3s ease; }
+
+        /* Красивые карточки читов */
         .cheat-card {
-            background: var(--tg-theme-secondary-bg-color, #202020);
-            border-radius: 12px; padding: 15px; margin-bottom: 15px; text-align: left;
-            border: 1px solid #2d2d2d;
+            background: #1c2434;
+            border-radius: 14px; padding: 18px; margin-bottom: 15px;
+            border: 1px solid #28344c;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            position: relative;
         }
-        .cheat-title { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
-        .cheat-desc { font-size: 13px; color: #b2b2b2; margin-bottom: 10px; }
+        .cheat-title { font-weight: bold; font-size: 18px; color: #fff; margin-bottom: 6px; }
+        .cheat-desc { font-size: 13px; color: #8fa0b5; margin-bottom: 15px; line-height: 1.4; }
+        
+        /* Индикаторы статусов софта */
+        .status-badge {
+            display: inline-block; padding: 4px 8px; border-radius: 6px;
+            font-size: 11px; font-weight: bold; margin-bottom: 10px;
+        }
+        .status-online { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
+        .status-update { background: rgba(241, 196, 15, 0.15); color: #f1c40f; }
+
+        /* Кнопки действий */
+        .btn-group { display: flex; gap: 10px; }
         .download-btn {
-            background: #0088cc; color: white; border: none; width: 100%;
-            padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;
+            background: #0088cc; color: white; border: none; flex-grow: 1;
+            padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;
+            transition: background 0.2s; font-size: 14px;
+        }
+        .download-btn:active { background: #006699; }
+        .info-btn {
+            background: #28344c; color: #8fa0b5; border: none;
+            padding: 12px 15px; border-radius: 8px; cursor: pointer; font-size: 14px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <h1>🤖 KennyHack Mobile App</h1>
-    <div class="subtitle">Выбирай софт прямо в интерфейсе приложения</div>
+    <!-- Шапка меню -->
+    <div class="header">
+        <h1>KennyHack Меню</h1>
+        <p>Актуальный и проверенный софт без бана</p>
+    </div>
 
-    <!-- Переключатель вкладок -->
+    <!-- Вкладки ПК/Телефон -->
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('pc')">🖥️ Читы на ПК</button>
-        <button class="tab-btn" onclick="switchTab('phone')">📱 На телефон</button>
+        <button class="tab-btn active" onclick="switchTab(event, 'pc')">🖥️ Читы на ПК</button>
+        <button class="tab-btn" onclick="switchTab(event, 'phone')">📱 На телефон</button>
     </div>
 
-    <!-- Раздел ПК -->
+    <!-- Раздел ПК читов -->
     <div id="pc-section" class="content-section active">
+        
+        <!-- Карточка 1: Granny -->
         <div class="cheat-card">
-            <div class="cheat-title">👵 Granny PC Mod Menu</div>
-            <div class="cheat-desc">Активация в игре на клавишу F1. Чит полностью безопасен и обходит проверку файлов.</div>
-            <button class="download-btn" onclick="sendAction('Granny PC')">Скачать софт</button>
+            <span class="status-badge status-online">● РАБОТАЕТ (Патч 2026)</span>
+            <div class="cheat-title">Granny PC Mod Menu</div>
+            <div class="cheat-desc">Полный набор функций: Режим бога, изменение скорости, спавн предметов. Обходит античит игры.</div>
+            <div class="btn-group">
+                <button class="download-btn" onclick="sendAction('Granny PC')">Скачать софт</button>
+                <button class="info-btn" onclick="alert('Инструкция:\n1. Скачай архив\n2. Распакуй в папку игры\n3. Клавиша активации: F1')">❓</button>
+            </div>
         </div>
+
+        <!-- Карточка 2: CS 2 (Пример) -->
+        <div class="cheat-card">
+            <span class="status-badge status-update">⚙️ НА ОБНОВЛЕНИИ</span>
+            <div class="cheat-title">Counter-Strike 2 Wallhack</div>
+            <div class="cheat-desc">Приватный WH софт. Ждем окончания тех-работ после обновления игры разработчиками.</div>
+            <div class="btn-group">
+                <button class="download-btn" style="background:#4b5563; cursor:not-allowed;" disabled>На обновлении</button>
+            </div>
+        </div>
+        
     </div>
 
-    <!-- Раздел Телефон -->
+    <!-- Раздел Телефонных читов -->
     <div id="phone-section" class="content-section">
+        
+        <!-- Карточка 1: Granny Android -->
         <div class="cheat-card">
-            <div class="cheat-title">🤖 Granny Android Cheat (.apk)</div>
-            <div class="cheat-desc">Модифицированный APK-файл со встроенным мод-меню (бессмертие, невидимость).</div>
-            <button class="download-btn" onclick="sendAction('Granny Android')">Скачать APK</button>
+            <span class="status-badge status-online">● РАБОТАЕТ (Android)</span>
+            <div class="cheat-title">Granny Android Cheat APK</div>
+            <div class="cheat-desc">Взломанный .apk установщик. Все открыто, реклама вырезана, встроены функции бессмертия.</div>
+            <div class="btn-group">
+                <button class="download-btn" onclick="sendAction('Granny Android')">Получить ссылку</button>
+            </div>
         </div>
+        
     </div>
 
     <script>
-        // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
         tg.ready();
-        tg.expand(); // Разворачиваем на весь экран
+        tg.expand();
 
-        // Функция переключения вкладок
-        function switchTab(type) {
+        function switchTab(event, type) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-
+            
+            event.currentTarget.classList.add('active');
             if(type === 'pc') {
-                event.target.classList.add('active');
                 document.getElementById('pc-section').classList.add('active');
             } else {
-                event.target.classList.add('active');
                 document.getElementById('phone-section').classList.add('active');
             }
         }
 
-        // Функция отправки действия обратно в чат боту
         function sendAction(cheatName) {
-            tg.sendData("download_" + cheatName); // Отправляем техническую строку боту
-            tg.close(); // Закрываем мини-приложение
+            tg.sendData("download_" + cheatName);
+            tg.close();
         }
     </script>
 </body>
