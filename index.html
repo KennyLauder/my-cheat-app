@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KennyHack Premium</title>
+    <title>KennyHack Space Edition</title>
     <script src="https://telegram.org"></script>
     <style>
+        /* КОСМИЧЕСКИЙ ГЛУБОКИЙ ФОН */
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #131924;
+            background: radial-gradient(circle at 50% 50%, #0d111a 0%, #05070b 100%);
             color: #ffffff;
             margin: 0; padding: 15px;
             overflow-x: hidden;
@@ -16,81 +17,82 @@
             min-height: 100vh;
         }
         
-        /* КОНТЕЙНЕР ДЛЯ СНЕГА */
-        #snow-container {
+        /* СЕТКА ИЗ МЕРЦАЮЩИХ ЗВЕЗД */
+        #space-background {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 1; /* Снег на фоне */
-            pointer-events: none; /* Чтобы снежинки не мешали кликать по кнопкам */
+            z-index: 1;
+            pointer-events: none;
         }
 
-        /* СТИЛЬ СНЕЖИНКИ */
-        .snowflake {
+        .star {
             position: absolute;
-            top: -10px;
-            color: rgba(0, 136, 204, 0.6); /* Неоново-голубоватый цвет */
-            font-size: 1em;
-            user-select: none;
-            animation-name: fall;
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: pulse infinite ease-in-out;
         }
 
-        /* АНИМАЦИЯ ПАДЕНИЯ И СМЕЩЕНИЯ */
-        @keyframes fall {
-            0% {
-                transform: translateY(0) translateX(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(105vh) translateX(50px);
-                opacity: 0.3;
-            }
+        /* АНИМАЦИЯ МЕРЦАНИЯ ЗВЕЗД */
+        @keyframes pulse {
+            0% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px #0088cc; }
+            100% { opacity: 0.2; transform: scale(0.8); }
         }
 
-        /* ВСЕ ОСТАЛЬНЫЕ ЭЛЕМЕНТЫ ПЕРЕНОСИМ НА ПЕРЕДНИЙ ПЛАН (z-index: 2) */
+        /* ОСНОВНОЙ КОНТЕНТ ПЕРЕНОСИМ НА ПЕРЕДНИЙ ПЛАН */
         .header, .tabs, .content-section {
             position: relative;
             z-index: 2;
         }
         
+        /* КИБЕРПАНК ШАПКА */
         .header {
-            background: linear-gradient(135deg, #0088cc, #00c6ff);
+            background: linear-gradient(135deg, rgba(0, 136, 204, 0.2), rgba(0, 198, 255, 0.05));
+            border: 1px solid rgba(0, 136, 204, 0.3);
             padding: 20px;
             border-radius: 16px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+            box-shadow: 0 0 20px rgba(0, 136, 204, 0.15);
+            backdrop-filter: blur(5px);
         }
-        .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }
-        .header p { margin: 5px 0 0 0; font-size: 13px; opacity: 0.9; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px; color: #00c6ff; text-shadow: 0 0 10px rgba(0, 198, 255, 0.5); }
+        .header p { margin: 5px 0 0 0; font-size: 13px; color: #8fa0b5; }
 
+        /* ТАБЫ */
         .tabs {
             display: flex;
-            background: #1e2633;
+            background: rgba(30, 38, 51, 0.6);
             padding: 5px;
             border-radius: 12px;
             margin-bottom: 20px;
+            border: 1px solid rgba(40, 52, 76, 0.5);
         }
         .tab-btn {
             background: transparent; color: #7a8b9e; border: none;
             padding: 12px; border-radius: 9px; cursor: pointer;
             font-weight: bold; font-size: 14px; width: 50%;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
         .tab-btn.active {
             background: #0088cc; color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 136, 204, 0.4);
+            box-shadow: 0 0 15px rgba(0, 136, 204, 0.6);
         }
 
         .content-section { display: none; }
-        .content-section.active { display: block; animation: fadeIn 0.3s ease; }
+        .content-section.active { display: block; animation: fadeIn 0.4s ease; }
 
+        /* КАРТОЧКИ В СТИЛЕ НЕОНОВЫХ БЛОКОВ */
         .cheat-card {
-            background: #1c2434;
+            background: rgba(28, 36, 52, 0.7);
             border-radius: 14px; padding: 18px; margin-bottom: 15px;
             border: 1px solid #28344c;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+            transition: border 0.3s;
+        }
+        .cheat-card:hover {
+            border-color: rgba(0, 136, 204, 0.5);
         }
         .cheat-title { font-weight: bold; font-size: 18px; color: #fff; margin-bottom: 6px; }
         .cheat-desc { font-size: 13px; color: #8fa0b5; margin-bottom: 15px; line-height: 1.4; }
@@ -99,34 +101,36 @@
             display: inline-block; padding: 4px 8px; border-radius: 6px;
             font-size: 11px; font-weight: bold; margin-bottom: 10px;
         }
-        .status-online { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
+        .status-online { background: rgba(46, 204, 113, 0.15); color: #2ecc71; box-shadow: 0 0 8px rgba(46, 204, 113, 0.2); }
         .status-update { background: rgba(241, 196, 15, 0.15); color: #f1c40f; }
 
         .btn-group { display: flex; gap: 10px; }
         .download-btn {
-            background: #0088cc; color: white; border: none; flex-grow: 1;
+            background: linear-gradient(135deg, #0088cc, #006699);
+            color: white; border: none; flex-grow: 1;
             padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;
-            transition: background 0.2s; font-size: 14px;
+            transition: all 0.2s; font-size: 14px;
+            box-shadow: 0 0 10px rgba(0, 136, 204, 0.3);
         }
-        .download-btn:active { background: #006699; }
+        .download-btn:active { transform: scale(0.98); box-shadow: none; }
         .info-btn {
             background: #28344c; color: #8fa0b5; border: none;
             padding: 12px 15px; border-radius: 8px; cursor: pointer; font-size: 14px;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <!-- Элемент, где будут создаваться снежинки -->
-    <div id="snow-container"></div>
+    <!-- Контейнер космического неба -->
+    <div id="space-background"></div>
 
     <div class="header">
-        <h1>KennyHack Меню</h1>
+        <h1>KennyHack Космос</h1>
         <p>Актуальный и проверенный софт без бана</p>
     </div>
 
@@ -167,7 +171,7 @@
         </div>
     </div>
 
-       <script>
+    <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
@@ -189,37 +193,34 @@
             tg.close();
         }
 
-        // СКРИПТ ДЛЯ ГЕНЕРАЦИИ СНЕЖИНОК (ИСПРАВЛЕНО)
-        function createSnowflake() {
-            const container = document.getElementById('snow-container');
-            const snowflake = document.createElement('div');
-            
-            // Массив из разных видов снежинок
-            const snowflakeTypes = ['❄', '❅', '❆', '•'];
-            snowflake.innerText = snowflakeTypes[Math.floor(Math.random() * snowflakeTypes.length)];
-            
-            snowflake.classList.add('snowflake');
-            
-            // Рандомная позиция по ширине экрана
-            snowflake.style.left = Math.random() * 100 + 'vw';
-            
-            // Рандомный размер снежинки
-            snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
-            
-            // Рандомная скорость падения (от 3 до 8 секунд)
-            snowflake.style.animationDuration = Math.random() * 5 + 3 + 's';
-            
-            container.appendChild(snowflake);
-            
-            // Удаляем снежинку после падения, чтобы не лагало
-            setTimeout(() => {
-                snowflake.remove();
-            }, 8000);
+        // ГЕНЕРАТОР ЖИВОГО КОСМОСА
+        function buildSpace() {
+            const space = document.getElementById('space-background');
+            const starCount = 60; // Количество звезд в сетке неба
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Случайное распределение звезд по экрану
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                
+                // Случайный размер звезд (от 1 до 3 пикселей)
+                const size = Math.random() * 2 + 1 + 'px';
+                star.style.width = size;
+                star.style.height = size;
+                
+                // Разное время мерцания, чтобы звезды мигали не одновременно
+                star.style.animationDuration = Math.random() * 4 + 2 + 's';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                
+                space.appendChild(star);
+            }
         }
 
-        // Генерируем новую снежинку каждые 200 миллисекунд
-        setInterval(createSnowflake, 200);
+        // Запуск генерации космоса при загрузке страницы
+        buildSpace();
     </script>
-
 </body>
 </html>
