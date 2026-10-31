@@ -203,7 +203,7 @@
         </div>
     </div>
 
-    <script>
+       <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
@@ -224,7 +224,7 @@
             } else {
                 document.getElementById('phone-section').classList.add('active');
             }
-            searchCheats(); // Перепроверяем фильтр при смене вкладки
+            searchCheats();
         }
 
         function sendAction(cheatName) {
@@ -232,22 +232,39 @@
             tg.close();
         }
 
-        // ЛОГИКА ПОИСКА КАРТОЧЕК
-        // ЛОГИКА ПОИСКА КАРТОЧЕК (ИСПРАВЛЕННАЯ)
+        // БРОНЕБОЙНАЯ ЛОГИКА ПОИСКА (ИСПРАВЛЕНО НА 100%)
         function searchCheats() {
-            const query = document.getElementById('search').value.toLowerCase().trim();
+            const searchInput = document.getElementById('search');
+            if (!searchInput) return;
+
+            // Избавляемся от потенциально ломающихся методов
+            const query = searchInput.value.toLowerCase().trim();
             const cards = document.querySelectorAll('.cheat-card');
             const notFoundBlock = document.getElementById('not-found');
             const tabsBar = document.getElementById('tabs-bar');
             
             let anyFound = false;
 
-            cards.forEach(card => {
-                const title = card.getAttribute('data-title').toLowerCase();
+            // Принудительно активируем видимость секций, чтобы поиск работал по всему каталогу
+            if (query !== "") {
+                tabsBar.style.display = "none";
+                document.getElementById('pc-section').style.display = "block";
+                document.getElementById('phone-section').style.display = "block";
+            } else {
+                tabsBar.style.display = "flex";
+                // Сбрасываем к стандартному отображению по вкладкам
+                document.getElementById('pc-section').style.display = "";
+                document.getElementById('phone-section').style.display = "";
+            }
+
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                const titleAttr = card.getAttribute('data-title');
+                const title = titleAttr ? titleAttr.toLowerCase() : "";
                 
                 if (query === "") {
+                    // Если строка пустая — фильтруем строго по активной вкладке
                     notFoundBlock.style.display = "none";
-                    tabsBar.style.display = "flex";
                     const parentId = card.parentElement.id;
                     if ((currentTab === 'pc' && parentId === 'pc-section') || (currentTab === 'phone' && parentId === 'phone-section')) {
                         card.style.display = "block";
@@ -255,28 +272,31 @@
                         card.style.display = "none";
                     }
                 } else {
-                    tabsBar.style.display = "none";
-                    document.getElementById('pc-section').classList.add('active');
-                    document.getElementById('phone-section').classList.add('active');
-
-                    if (title.includes(query)) {
+                    // Если идет поиск — проверяем совпадение букв
+                    if (title.indexOf(query) !== -1) {
                         card.style.display = "block";
                         anyFound = true;
                     } else {
                         card.style.display = "none";
                     }
                 }
-            });
+            }
 
+            // Показываем плашку "Ничего не найдено", только если реально пусто
             if (query !== "" && !anyFound) {
                 notFoundBlock.style.display = "block";
-            } else if (query !== "") {
+            } else {
                 notFoundBlock.style.display = "none";
             }
         }
 
-// ФУНКЦИЯ КРЕСТИКА СБРОСА
-function clearSearch() {
-document.getElementById('search').value = "";
-switchTab(null, currentTab); // Возвращаем обычный вид вкладок
-}
+        function clearSearch() {
+            document.getElementById('search').value = "";
+            switchTab(null, currentTab);
+        }
+
+        // Дополнительно вешаем слушатели событий на инпут для моментального отклика
+        document.getElementById('search').addEventListener('keyup', searchCheats);
+        document.getElementById('search').addEventListener('paste', searchCheats);
+    </script>
+
