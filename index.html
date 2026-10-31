@@ -233,45 +233,48 @@
         }
 
         // ЛОГИКА ПОИСКА КАРТОЧЕК
-function searchCheats() {
-const query = document.getElementById('search').value.toLowerCase().strip;
-const cards = document.querySelectorAll('.cheat-card');
-const notFoundBlock = document.getElementById('not-found');
-const tabsBar = document.getElementById('tabs-bar');
-let anyFound = false;
-cards.forEach(card => {
-const title = card.getAttribute('data-title').toLowerCase();
-// Если строка поиска пустая, фильтруем просто по вкладкам ПК/Телефон
-if (query === "") {
-notFoundBlock.style.display = "none";
-tabsBar.style.display = "flex";
-// Показываем карточку только если она принадлежит активной вкладке
-const parentId = card.parentElement.id;
-if ((currentTab === 'pc' && parentId === 'pc-section') || (currentTab === 'phone' && parentId === 'phone-section')) {
-card.style.display = "block";
-} else {
-card.style.display = "none";
-}
-} else {
-// Если идет поиск, ищем по ВСЕМ карточкам сразу (игнорируя вкладки)
-tabsBar.style.display = "none"; // Прячем табы, чтобы не путать
-document.getElementById('pc-section').classList.add('active');
-document.getElementById('phone-section').classList.add('active');
-if (title.includes(query)) {
-card.style.display = "block";
-anyFound = true;
-} else {
-card.style.display = "none";
-}
-}
-});
-// Если вообще ничего не нашлось во всем каталоге
-if (query !== "" && !anyFound) {
-notFoundBlock.style.display = "block";
-} else if (query !== "") {
-notFoundBlock.style.display = "none";
-}
-}
+        // ЛОГИКА ПОИСКА КАРТОЧЕК (ИСПРАВЛЕННАЯ)
+        function searchCheats() {
+            const query = document.getElementById('search').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.cheat-card');
+            const notFoundBlock = document.getElementById('not-found');
+            const tabsBar = document.getElementById('tabs-bar');
+            
+            let anyFound = false;
+
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title').toLowerCase();
+                
+                if (query === "") {
+                    notFoundBlock.style.display = "none";
+                    tabsBar.style.display = "flex";
+                    const parentId = card.parentElement.id;
+                    if ((currentTab === 'pc' && parentId === 'pc-section') || (currentTab === 'phone' && parentId === 'phone-section')) {
+                        card.style.display = "block";
+                    } else {
+                        card.style.display = "none";
+                    }
+                } else {
+                    tabsBar.style.display = "none";
+                    document.getElementById('pc-section').classList.add('active');
+                    document.getElementById('phone-section').classList.add('active');
+
+                    if (title.includes(query)) {
+                        card.style.display = "block";
+                        anyFound = true;
+                    } else {
+                        card.style.display = "none";
+                    }
+                }
+            });
+
+            if (query !== "" && !anyFound) {
+                notFoundBlock.style.display = "block";
+            } else if (query !== "") {
+                notFoundBlock.style.display = "none";
+            }
+        }
+
 // ФУНКЦИЯ КРЕСТИКА СБРОСА
 function clearSearch() {
 document.getElementById('search').value = "";
