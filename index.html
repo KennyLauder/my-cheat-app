@@ -167,7 +167,7 @@
         </div>
     </div>
 
-    <script>
+       <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
@@ -189,7 +189,7 @@
             tg.close();
         }
 
-        # СКРИПТ ДЛЯ ГЕНЕРАЦИИ СНЕЖИНОК
+        // СКРИПТ ДЛЯ ГЕНЕРАЦИИ СНЕЖИНОК (ИСПРАВЛЕНО)
         function createSnowflake() {
             const container = document.getElementById('snow-container');
             const snowflake = document.createElement('div');
@@ -211,7 +211,7 @@
             
             container.appendChild(snowflake);
             
-            // Удаляем снежинку после того, как она упала, чтобы не засорять память
+            // Удаляем снежинку после падения, чтобы не лагало
             setTimeout(() => {
                 snowflake.remove();
             }, 8000);
@@ -220,5 +220,6 @@
         // Генерируем новую снежинку каждые 200 миллисекунд
         setInterval(createSnowflake, 200);
     </script>
+
 </body>
 </html>
