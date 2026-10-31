@@ -6,16 +6,55 @@
     <title>KennyHack Premium</title>
     <script src="https://telegram.org"></script>
     <style>
-        /* Стильный тёмный дизайн в тему Telegram */
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: #131924;
             color: #ffffff;
             margin: 0; padding: 15px;
             overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
         }
         
-        /* Шапка приложения */
+        /* КОНТЕЙНЕР ДЛЯ СНЕГА */
+        #snow-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1; /* Снег на фоне */
+            pointer-events: none; /* Чтобы снежинки не мешали кликать по кнопкам */
+        }
+
+        /* СТИЛЬ СНЕЖИНКИ */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: rgba(0, 136, 204, 0.6); /* Неоново-голубоватый цвет */
+            font-size: 1em;
+            user-select: none;
+            animation-name: fall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        /* АНИМАЦИЯ ПАДЕНИЯ И СМЕЩЕНИЯ */
+        @keyframes fall {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(105vh) translateX(50px);
+                opacity: 0.3;
+            }
+        }
+
+        /* ВСЕ ОСТАЛЬНЫЕ ЭЛЕМЕНТЫ ПЕРЕНОСИМ НА ПЕРЕДНИЙ ПЛАН (z-index: 2) */
+        .header, .tabs, .content-section {
+            position: relative;
+            z-index: 2;
+        }
+        
         .header {
             background: linear-gradient(135deg, #0088cc, #00c6ff);
             padding: 20px;
@@ -26,7 +65,6 @@
         .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }
         .header p { margin: 5px 0 0 0; font-size: 13px; opacity: 0.9; }
 
-        /* Переключатель вкладок */
         .tabs {
             display: flex;
             background: #1e2633;
@@ -45,22 +83,18 @@
             box-shadow: 0 2px 8px rgba(0, 136, 204, 0.4);
         }
 
-        /* Контент вкладок */
         .content-section { display: none; }
         .content-section.active { display: block; animation: fadeIn 0.3s ease; }
 
-        /* Красивые карточки читов */
         .cheat-card {
             background: #1c2434;
             border-radius: 14px; padding: 18px; margin-bottom: 15px;
             border: 1px solid #28344c;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            position: relative;
         }
         .cheat-title { font-weight: bold; font-size: 18px; color: #fff; margin-bottom: 6px; }
         .cheat-desc { font-size: 13px; color: #8fa0b5; margin-bottom: 15px; line-height: 1.4; }
         
-        /* Индикаторы статусов софта */
         .status-badge {
             display: inline-block; padding: 4px 8px; border-radius: 6px;
             font-size: 11px; font-weight: bold; margin-bottom: 10px;
@@ -68,7 +102,6 @@
         .status-online { background: rgba(46, 204, 113, 0.15); color: #2ecc71; }
         .status-update { background: rgba(241, 196, 15, 0.15); color: #f1c40f; }
 
-        /* Кнопки действий */
         .btn-group { display: flex; gap: 10px; }
         .download-btn {
             background: #0088cc; color: white; border: none; flex-grow: 1;
@@ -89,22 +122,20 @@
 </head>
 <body>
 
-    <!-- Шапка меню -->
+    <!-- Элемент, где будут создаваться снежинки -->
+    <div id="snow-container"></div>
+
     <div class="header">
         <h1>KennyHack Меню</h1>
         <p>Актуальный и проверенный софт без бана</p>
     </div>
 
-    <!-- Вкладки ПК/Телефон -->
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab(event, 'pc')">🖥️ Читы на ПК</button>
         <button class="tab-btn" onclick="switchTab(event, 'phone')">📱 На телефон</button>
     </div>
 
-    <!-- Раздел ПК читов -->
     <div id="pc-section" class="content-section active">
-        
-        <!-- Карточка 1: Granny -->
         <div class="cheat-card">
             <span class="status-badge status-online">● РАБОТАЕТ (Патч 2026)</span>
             <div class="cheat-title">Granny PC Mod Menu</div>
@@ -115,7 +146,6 @@
             </div>
         </div>
 
-        <!-- Карточка 2: CS 2 (Пример) -->
         <div class="cheat-card">
             <span class="status-badge status-update">⚙️ НА ОБНОВЛЕНИИ</span>
             <div class="cheat-title">Counter-Strike 2 Wallhack</div>
@@ -124,13 +154,9 @@
                 <button class="download-btn" style="background:#4b5563; cursor:not-allowed;" disabled>На обновлении</button>
             </div>
         </div>
-        
     </div>
 
-    <!-- Раздел Телефонных читов -->
     <div id="phone-section" class="content-section">
-        
-        <!-- Карточка 1: Granny Android -->
         <div class="cheat-card">
             <span class="status-badge status-online">● РАБОТАЕТ (Android)</span>
             <div class="cheat-title">Granny Android Cheat APK</div>
@@ -139,7 +165,6 @@
                 <button class="download-btn" onclick="sendAction('Granny Android')">Получить ссылку</button>
             </div>
         </div>
-        
     </div>
 
     <script>
@@ -163,6 +188,37 @@
             tg.sendData("download_" + cheatName);
             tg.close();
         }
+
+        # СКРИПТ ДЛЯ ГЕНЕРАЦИИ СНЕЖИНОК
+        function createSnowflake() {
+            const container = document.getElementById('snow-container');
+            const snowflake = document.createElement('div');
+            
+            // Массив из разных видов снежинок
+            const snowflakeTypes = ['❄', '❅', '❆', '•'];
+            snowflake.innerText = snowflakeTypes[Math.floor(Math.random() * snowflakeTypes.length)];
+            
+            snowflake.classList.add('snowflake');
+            
+            // Рандомная позиция по ширине экрана
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            
+            // Рандомный размер снежинки
+            snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+            
+            // Рандомная скорость падения (от 3 до 8 секунд)
+            snowflake.style.animationDuration = Math.random() * 5 + 3 + 's';
+            
+            container.appendChild(snowflake);
+            
+            // Удаляем снежинку после того, как она упала, чтобы не засорять память
+            setTimeout(() => {
+                snowflake.remove();
+            }, 8000);
+        }
+
+        // Генерируем новую снежинку каждые 200 миллисекунд
+        setInterval(createSnowflake, 200);
     </script>
 </body>
 </html>
