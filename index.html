@@ -6,128 +6,106 @@
     <title>KennyHack Space Edition</title>
     <script src="https://telegram.org"></script>
     <style>
-        /* КОСМИЧЕСКИЙ ГЛУБОКИЙ ФОН */
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: radial-gradient(circle at 50% 50%, #0d111a 0%, #05070b 100%);
+            background: #05070b;
             color: #ffffff;
             margin: 0; padding: 15px;
             overflow-x: hidden;
-            position: relative;
             min-height: 100vh;
+            position: relative;
         }
         
-        /* СЕТКА ИЗ МЕРЦАЮЩИХ ЗВЕЗД */
-        #space-background {
+        /* ЧИСТЫЙ CSS КОСМОС: Генерируем звёзды через тени, без JavaScript! */
+        body::before {
+            content: "";
             position: fixed;
             top: 0; left: 0;
-            width: 100%; height: 100%;
+            width: 2px; height: 2px;
+            background: transparent;
+            /* Создаем сетку ярких неоновых звезд по всему экрану */
+            box-shadow: 
+                15vw 10vh #fff, 35vw 25vh #00c6ff, 75vw 15vh #fff, 85vw 40vh #0088cc,
+                20vw 60vh #fff, 50vw 50vh #00c6ff, 65vw 80vh #fff, 10vw 85vh #0088cc,
+                90vw 70vh #fff, 40vw 90vh #00c6ff, 30vw 45vh #fff, 70vw 65vh #0088cc;
+            animation: spaceGlow 4s infinite ease-in-out;
             z-index: 1;
-            pointer-events: none;
         }
 
-        .star {
-            position: absolute;
-            background: #ffffff;
-            border-radius: 50%;
-            animation: pulse infinite ease-in-out;
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 3px; height: 3px;
+            background: transparent;
+            /* Вторая сетка звезд покрупнее для эффекта глубины */
+            box-shadow: 
+                5vw 30vh #00c6ff, 45vw 15vh #fff, 80vw 55vh #0088cc, 95vw 20vh #fff,
+                25vw 75vh #00c6ff, 55vw 85vh #fff, 60vw 35vh #0088cc, 38vw 68vh #fff;
+            animation: spaceGlow 6s infinite ease-in-out reverse;
+            z-index: 1;
         }
 
-        /* АНИМАЦИЯ МЕРЦАНИЯ ЗВЕЗД */
-        @keyframes pulse {
-            0% { opacity: 0.2; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px #0088cc; }
-            100% { opacity: 0.2; transform: scale(0.8); }
+        /* КРУТАЯ АНИМАЦИЯ МЕРЦАНИЯ */
+        @keyframes spaceGlow {
+            0% { opacity: 0.3; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 4px #00c6ff); }
+            100% { opacity: 0.3; transform: scale(0.9); }
         }
 
-        /* ОСНОВНОЙ КОНТЕНТ ПЕРЕНОСИМ НА ПЕРЕДНИЙ ПЛАН */
+        /* Контент выдвигаем поверх космоса */
         .header, .tabs, .content-section {
             position: relative;
             z-index: 2;
         }
         
-        /* КИБЕРПАНК ШАПКА */
         .header {
             background: linear-gradient(135deg, rgba(0, 136, 204, 0.2), rgba(0, 198, 255, 0.05));
             border: 1px solid rgba(0, 136, 204, 0.3);
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 20px;
+            padding: 20px; border-radius: 16px; margin-bottom: 20px;
             box-shadow: 0 0 20px rgba(0, 136, 204, 0.15);
             backdrop-filter: blur(5px);
         }
-        .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px; color: #00c6ff; text-shadow: 0 0 10px rgba(0, 198, 255, 0.5); }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 800; color: #00c6ff; text-shadow: 0 0 10px rgba(0, 198, 255, 0.5); }
         .header p { margin: 5px 0 0 0; font-size: 13px; color: #8fa0b5; }
 
-        /* ТАБЫ */
         .tabs {
-            display: flex;
-            background: rgba(30, 38, 51, 0.6);
-            padding: 5px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(40, 52, 76, 0.5);
+            display: flex; background: rgba(30, 38, 51, 0.6); padding: 5px;
+            border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(40, 52, 76, 0.5);
         }
         .tab-btn {
-            background: transparent; color: #7a8b9e; border: none;
-            padding: 12px; border-radius: 9px; cursor: pointer;
-            font-weight: bold; font-size: 14px; width: 50%;
-            transition: all 0.3s ease;
+            background: transparent; color: #7a8b9e; border: none; padding: 12px;
+            border-radius: 9px; cursor: pointer; font-weight: bold; font-size: 14px; width: 50%;
         }
-        .tab-btn.active {
-            background: #0088cc; color: #fff;
-            box-shadow: 0 0 15px rgba(0, 136, 204, 0.6);
-        }
+        .tab-btn.active { background: #0088cc; color: #fff; box-shadow: 0 0 15px rgba(0, 136, 204, 0.6); }
 
         .content-section { display: none; }
         .content-section.active { display: block; animation: fadeIn 0.4s ease; }
 
-        /* КАРТОЧКИ В СТИЛЕ НЕОНОВЫХ БЛОКОВ */
         .cheat-card {
-            background: rgba(28, 36, 52, 0.7);
-            border-radius: 14px; padding: 18px; margin-bottom: 15px;
-            border: 1px solid #28344c;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            background: rgba(28, 36, 52, 0.7); border-radius: 14px; padding: 18px;
+            margin-bottom: 15px; border: 1px solid #28344c; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             backdrop-filter: blur(5px);
-            transition: border 0.3s;
-        }
-        .cheat-card:hover {
-            border-color: rgba(0, 136, 204, 0.5);
         }
         .cheat-title { font-weight: bold; font-size: 18px; color: #fff; margin-bottom: 6px; }
         .cheat-desc { font-size: 13px; color: #8fa0b5; margin-bottom: 15px; line-height: 1.4; }
         
-        .status-badge {
-            display: inline-block; padding: 4px 8px; border-radius: 6px;
-            font-size: 11px; font-weight: bold; margin-bottom: 10px;
-        }
+        .status-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-bottom: 10px; }
         .status-online { background: rgba(46, 204, 113, 0.15); color: #2ecc71; box-shadow: 0 0 8px rgba(46, 204, 113, 0.2); }
         .status-update { background: rgba(241, 196, 15, 0.15); color: #f1c40f; }
 
         .btn-group { display: flex; gap: 10px; }
         .download-btn {
-            background: linear-gradient(135deg, #0088cc, #006699);
-            color: white; border: none; flex-grow: 1;
-            padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;
-            transition: all 0.2s; font-size: 14px;
+            background: linear-gradient(135deg, #0088cc, #006699); color: white; border: none;
+            flex-grow: 1; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;
             box-shadow: 0 0 10px rgba(0, 136, 204, 0.3);
         }
-        .download-btn:active { transform: scale(0.98); box-shadow: none; }
-        .info-btn {
-            background: #28344c; color: #8fa0b5; border: none;
-            padding: 12px 15px; border-radius: 8px; cursor: pointer; font-size: 14px;
-        }
+        .info-btn { background: #28344c; color: #8fa0b5; border: none; padding: 12px 15px; border-radius: 8px; cursor: pointer; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-
-    <!-- Контейнер космического неба -->
-    <div id="space-background"></div>
 
     <div class="header">
         <h1>KennyHack Космос</h1>
@@ -192,35 +170,6 @@
             tg.sendData("download_" + cheatName);
             tg.close();
         }
-
-        // ГЕНЕРАТОР ЖИВОГО КОСМОСА
-        function buildSpace() {
-            const space = document.getElementById('space-background');
-            const starCount = 60; // Количество звезд в сетке неба
-
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                
-                // Случайное распределение звезд по экрану
-                star.style.left = Math.random() * 100 + 'vw';
-                star.style.top = Math.random() * 100 + 'vh';
-                
-                // Случайный размер звезд (от 1 до 3 пикселей)
-                const size = Math.random() * 2 + 1 + 'px';
-                star.style.width = size;
-                star.style.height = size;
-                
-                // Разное время мерцания, чтобы звезды мигали не одновременно
-                star.style.animationDuration = Math.random() * 4 + 2 + 's';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                
-                space.appendChild(star);
-            }
-        }
-
-        // Запуск генерации космоса при загрузке страницы
-        buildSpace();
     </script>
 </body>
 </html>
