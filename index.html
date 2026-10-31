@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KennyHack Space Edition</title>
+    <title>KennyHack Space Search Edition</title>
     <script src="https://telegram.org"></script>
     <style>
         body {
@@ -16,14 +16,13 @@
             position: relative;
         }
         
-        /* ЧИСТЫЙ CSS КОСМОС: Генерируем звёзды через тени, без JavaScript! */
+        /* ЧИСТЫЙ CSS КОСМОС */
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0;
-            width: 2px; height: 2px;
+            width: 5px; height: 5px;
             background: transparent;
-            /* Создаем сетку ярких неоновых звезд по всему экрану */
             box-shadow: 
                 15vw 10vh #fff, 35vw 25vh #00c6ff, 75vw 15vh #fff, 85vw 40vh #0088cc,
                 20vw 60vh #fff, 50vw 50vh #00c6ff, 65vw 80vh #fff, 10vw 85vh #0088cc,
@@ -36,9 +35,8 @@
             content: "";
             position: fixed;
             top: 0; left: 0;
-            width: 3px; height: 3px;
+            width: 6px; height: 6px;
             background: transparent;
-            /* Вторая сетка звезд покрупнее для эффекта глубины */
             box-shadow: 
                 5vw 30vh #00c6ff, 45vw 15vh #fff, 80vw 55vh #0088cc, 95vw 20vh #fff,
                 25vw 75vh #00c6ff, 55vw 85vh #fff, 60vw 35vh #0088cc, 38vw 68vh #fff;
@@ -46,15 +44,14 @@
             z-index: 1;
         }
 
-        /* КРУТАЯ АНИМАЦИЯ МЕРЦАНИЯ */
         @keyframes spaceGlow {
             0% { opacity: 0.3; transform: scale(0.9); }
             50% { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 4px #00c6ff); }
             100% { opacity: 0.3; transform: scale(0.9); }
         }
 
-        /* Контент выдвигаем поверх космоса */
-        .header, .tabs, .content-section {
+        /* Выдвигаем элементы интерфейса вперед */
+        .header, .search-container, .tabs, .content-section, #not-found {
             position: relative;
             z-index: 2;
         }
@@ -62,13 +59,55 @@
         .header {
             background: linear-gradient(135deg, rgba(0, 136, 204, 0.2), rgba(0, 198, 255, 0.05));
             border: 1px solid rgba(0, 136, 204, 0.3);
-            padding: 20px; border-radius: 16px; margin-bottom: 20px;
+            padding: 20px; border-radius: 16px; margin-bottom: 15px;
             box-shadow: 0 0 20px rgba(0, 136, 204, 0.15);
             backdrop-filter: blur(5px);
         }
         .header h1 { margin: 0; font-size: 24px; font-weight: 800; color: #00c6ff; text-shadow: 0 0 10px rgba(0, 198, 255, 0.5); }
         .header p { margin: 5px 0 0 0; font-size: 13px; color: #8fa0b5; }
 
+        /* КРАСИВОЕ ПОЛЕ ПОИСКА */
+        .search-container {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            background: rgba(30, 38, 51, 0.8);
+            border: 1px solid #28344c;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .search-input:focus {
+            border-color: #0088cc;
+            box-shadow: 0 0 10px rgba(0, 136, 204, 0.4);
+        }
+
+        /* БЛОК "НИЧЕГО НЕ НАЙДЕНО" */
+        #not-found {
+            display: none;
+            background: rgba(44, 31, 31, 0.5);
+            border: 1px solid #ff4a4a;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255, 74, 74, 0.1);
+        }
+        #not-found p { margin: 0 0 15px 0; color: #ff8484; font-weight: bold; }
+        .clear-btn {
+            background: #ff4a4a; color: white; border: none;
+            padding: 8px 16px; border-radius: 8px; font-weight: bold;
+            cursor: pointer; font-size: 13px; transition: background 0.2s;
+        }
+        .clear-btn:active { background: #cc3333; }
+
+        /* ТАБЫ */
         .tabs {
             display: flex; background: rgba(30, 38, 51, 0.6); padding: 5px;
             border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(40, 52, 76, 0.5);
@@ -80,13 +119,15 @@
         .tab-btn.active { background: #0088cc; color: #fff; box-shadow: 0 0 15px rgba(0, 136, 204, 0.6); }
 
         .content-section { display: none; }
-        .content-section.active { display: block; animation: fadeIn 0.4s ease; }
+        .content-section.active { display: block; }
 
+        /* КАРТОЧКИ ЧИТОВ */
         .cheat-card {
             background: rgba(28, 36, 52, 0.7); border-radius: 14px; padding: 18px;
             margin-bottom: 15px; border: 1px solid #28344c; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px); transition: border 0.3s;
         }
+        .cheat-card:hover { border-color: rgba(0, 136, 204, 0.5); }
         .cheat-title { font-weight: bold; font-size: 18px; color: #fff; margin-bottom: 6px; }
         .cheat-desc { font-size: 13px; color: #8fa0b5; margin-bottom: 15px; line-height: 1.4; }
         
@@ -112,13 +153,25 @@
         <p>Актуальный и проверенный софт без бана</p>
     </div>
 
-    <div class="tabs">
+    <!-- ПОЛЕ ПОИСКА -->
+    <div class="search-container">
+        <input type="text" id="search" class="search-input" placeholder="🔍 Поиск софта по названию..." oninput="searchCheats()">
+    </div>
+
+    <div class="tabs" id="tabs-bar">
         <button class="tab-btn active" onclick="switchTab(event, 'pc')">🖥️ Читы на ПК</button>
         <button class="tab-btn" onclick="switchTab(event, 'phone')">📱 На телефон</button>
     </div>
 
+    <!-- ПАНЕЛЬ ОШИБКИ ПОИСКА -->
+    <div id="not-found">
+        <p>По вашему запросу ничего не найдено</p>
+        <button class="clear-btn" onclick="clearSearch()">✖ Сбросить поиск</button>
+    </div>
+
+    <!-- Раздел ПК -->
     <div id="pc-section" class="content-section active">
-        <div class="cheat-card">
+        <div class="cheat-card" data-title="Granny PC Mod Menu">
             <span class="status-badge status-online">● РАБОТАЕТ (Патч 2026)</span>
             <div class="cheat-title">Granny PC Mod Menu</div>
             <div class="cheat-desc">Полный набор функций: Режим бога, изменение скорости, спавн предметов. Обходит античит игры.</div>
@@ -128,7 +181,7 @@
             </div>
         </div>
 
-        <div class="cheat-card">
+        <div class="cheat-card" data-title="Counter-Strike 2 Wallhack WH CS2">
             <span class="status-badge status-update">⚙️ НА ОБНОВЛЕНИИ</span>
             <div class="cheat-title">Counter-Strike 2 Wallhack</div>
             <div class="cheat-desc">Приватный WH софт. Ждем окончания тех-работ после обновления игры разработчиками.</div>
@@ -138,8 +191,9 @@
         </div>
     </div>
 
+    <!-- Раздел Телефон -->
     <div id="phone-section" class="content-section">
-        <div class="cheat-card">
+        <div class="cheat-card" data-title="Granny Android Cheat APK">
             <span class="status-badge status-online">● РАБОТАЕТ (Android)</span>
             <div class="cheat-title">Granny Android Cheat APK</div>
             <div class="cheat-desc">Взломанный .apk установщик. Все открыто, реклама вырезана, встроены функции бессмертия.</div>
@@ -154,22 +208,72 @@
         tg.ready();
         tg.expand();
 
+        let currentTab = 'pc';
+
         function switchTab(event, type) {
+            currentTab = type;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
             
-            event.currentTarget.classList.add('active');
+            if (event) {
+                event.currentTarget.classList.add('active');
+            }
+            
             if(type === 'pc') {
                 document.getElementById('pc-section').classList.add('active');
             } else {
                 document.getElementById('phone-section').classList.add('active');
             }
+            searchCheats(); // Перепроверяем фильтр при смене вкладки
         }
 
         function sendAction(cheatName) {
             tg.sendData("download_" + cheatName);
             tg.close();
         }
-    </script>
-</body>
-</html>
+
+        // ЛОГИКА ПОИСКА КАРТОЧЕК
+function searchCheats() {
+const query = document.getElementById('search').value.toLowerCase().strip;
+const cards = document.querySelectorAll('.cheat-card');
+const notFoundBlock = document.getElementById('not-found');
+const tabsBar = document.getElementById('tabs-bar');
+let anyFound = false;
+cards.forEach(card => {
+const title = card.getAttribute('data-title').toLowerCase();
+// Если строка поиска пустая, фильтруем просто по вкладкам ПК/Телефон
+if (query === "") {
+notFoundBlock.style.display = "none";
+tabsBar.style.display = "flex";
+// Показываем карточку только если она принадлежит активной вкладке
+const parentId = card.parentElement.id;
+if ((currentTab === 'pc' && parentId === 'pc-section') || (currentTab === 'phone' && parentId === 'phone-section')) {
+card.style.display = "block";
+} else {
+card.style.display = "none";
+}
+} else {
+// Если идет поиск, ищем по ВСЕМ карточкам сразу (игнорируя вкладки)
+tabsBar.style.display = "none"; // Прячем табы, чтобы не путать
+document.getElementById('pc-section').classList.add('active');
+document.getElementById('phone-section').classList.add('active');
+if (title.includes(query)) {
+card.style.display = "block";
+anyFound = true;
+} else {
+card.style.display = "none";
+}
+}
+});
+// Если вообще ничего не нашлось во всем каталоге
+if (query !== "" && !anyFound) {
+notFoundBlock.style.display = "block";
+} else if (query !== "") {
+notFoundBlock.style.display = "none";
+}
+}
+// ФУНКЦИЯ КРЕСТИКА СБРОСА
+function clearSearch() {
+document.getElementById('search').value = "";
+switchTab(null, currentTab); // Возвращаем обычный вид вкладок
+}
