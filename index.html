@@ -8,119 +8,65 @@
     <style>
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #05070b;
-            color: #ffffff;
-            margin: 0; padding: 15px;
-            overflow-x: hidden;
-            min-height: 100vh;
-            position: relative;
+            background: #05070b; color: #ffffff; margin: 0; padding: 15px; overflow-x: hidden; min-height: 100vh; position: relative;
         }
-        
-        /* КОСМИЧЕСКИЙ ФОН */
         body::before {
             content: ""; position: fixed; top: 0; left: 0; width: 5px; height: 5px; background: transparent;
-            box-shadow: 
-                15vw 10vh #fff, 35vw 25vh #00c6ff, 75vw 15vh #fff, 85vw 40vh #0088cc,
-                20vw 60vh #fff, 50vw 50vh #00c6ff, 65vw 80vh #fff, 10vw 85vh #0088cc,
-                90vw 70vh #fff, 40vw 90vh #00c6ff, 30vw 45vh #fff, 70vw 65vh #0088cc;
+            box-shadow: 15vw 10vh #fff, 35vw 25vh #00c6ff, 75vw 15vh #fff, 85vw 40vh #0088cc, 20vw 60vh #fff, 50vw 50vh #00c6ff, 65vw 80vh #fff, 10vw 85vh #0088cc, 90vw 70vh #fff, 40vw 90vh #00c6ff, 30vw 45vh #fff, 70vw 65vh #0088cc;
             animation: spaceGlow 4s infinite ease-in-out; z-index: 1;
         }
         body::after {
             content: ""; position: fixed; top: 0; left: 0; width: 6px; height: 6px; background: transparent;
-            box-shadow: 
-                5vw 30vh #00c6ff, 45vw 15vh #fff, 80vw 55vh #0088cc, 95vw 20vh #fff,
-                25vw 75vh #00c6ff, 55vw 85vh #fff, 60vw 35vh #0088cc, 38vw 68vh #fff;
+            box-shadow: 5vw 30vh #00c6ff, 45vw 15vh #fff, 80vw 55vh #0088cc, 95vw 20vh #fff, 25vw 75vh #00c6ff, 55vw 85vh #fff, 60vw 35vh #0088cc, 38vw 68vh #fff;
             animation: spaceGlow 6s infinite ease-in-out reverse; z-index: 1;
         }
-        @keyframes spaceGlow {
-            0% { opacity: 0.3; transform: scale(0.9); }
-            50% { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 4px #00c6ff); }
-            100% { opacity: 0.3; transform: scale(0.9); }
-        }
-
-        .header, .search-container, .tabs, .content-section, #not-found, #main-interface {
-            position: relative; z-index: 2;
-        }
-        
+        @keyframes spaceGlow { 0% { opacity: 0.3; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); filter: drop-shadow(0 0 4px #00c6ff); } 100% { opacity: 0.3; transform: scale(0.9); } }
+        .header, .search-container, .tabs, .content-section, #not-found, #main-interface { position: relative; z-index: 2; }
         #main-interface { display: block; }
-
         .header {
             background: linear-gradient(135deg, rgba(0, 136, 204, 0.2), rgba(0, 198, 255, 0.05));
-            border: 1px solid rgba(0, 136, 204, 0.3);
-            padding: 20px; border-radius: 16px; margin-bottom: 15px;
+            border: 1px solid rgba(0, 136, 204, 0.3); padding: 20px; border-radius: 16px; margin-bottom: 15px;
             box-shadow: 0 0 20px rgba(0, 136, 204, 0.15); backdrop-filter: blur(5px);
         }
         .header h1 { margin: 0; font-size: 24px; font-weight: 800; color: #00c6ff; text-shadow: 0 0 10px rgba(0, 198, 255, 0.5); }
         .header p { margin: 5px 0 0 0; font-size: 13px; color: #8fa0b5; }
-
         .search-container { margin-bottom: 15px; }
         .search-input {
-            width: 100%; padding: 12px 15px; background: rgba(30, 38, 51, 0.8);
-            border: 1px solid #28344c; border-radius: 12px; color: #fff; font-size: 14px;
-            box-sizing: border-box; outline: none; transition: all 0.3s;
+            width: 100%; padding: 12px 15px; background: rgba(30, 38, 51, 0.8); border: 1px solid #28344c; border-radius: 12px; color: #fff; font-size: 14px; box-sizing: border-box; outline: none; transition: all 0.3s;
         }
         .search-input:focus { border-color: #0088cc; box-shadow: 0 0 10px rgba(0, 136, 204, 0.4); }
-
-        .tabs {
-            display: flex; background: rgba(30, 38, 51, 0.6); padding: 5px;
-            border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(40, 52, 76, 0.5);
-        }
+        .tabs { display: flex; background: rgba(30, 38, 51, 0.6); padding: 5px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(40, 52, 76, 0.5); }
         .tab-btn { background: transparent; color: #7a8b9e; border: none; padding: 12px; border-radius: 9px; cursor: pointer; font-weight: bold; font-size: 14px; width: 50%; }
         .tab-btn.active { background: #0088cc; color: #fff; box-shadow: 0 0 15px rgba(0, 136, 204, 0.6); }
-
         .content-section { display: none; }
         .content-section.active { display: block; }
-
         .cheat-card {
-            background: rgba(28, 36, 52, 0.7); border-radius: 14px; padding: 18px; margin-bottom: 15px;
-            border: 1px solid #28344c; box-shadow: 0 4px 15px rgba(0,0,0,0.3); backdrop-filter: blur(5px);
+            background: rgba(28, 36, 52, 0.7); border-radius: 14px; padding: 18px; margin-bottom: 15px; border: 1px solid #28344c; box-shadow: 0 4px 15px rgba(0,0,0,0.3); backdrop-filter: blur(5px);
         }
         .cheat-title { font-weight: bold; font-size: 18px; color: #fff; margin-bottom: 6px; }
         .cheat-desc { font-size: 13px; color: #8fa0b5; margin-bottom: 15px; line-height: 1.4; }
-        
         .status-badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-bottom: 10px; }
         .status-online { background: rgba(46, 204, 113, 0.15); color: #2ecc71; box-shadow: 0 0 8px rgba(46, 204, 113, 0.2); }
         .status-update { background: rgba(241, 196, 15, 0.15); color: #f1c40f; }
-
         .btn-group { display: flex; gap: 10px; }
         .download-btn {
-            background: linear-gradient(135deg, #0088cc, #006699); color: white; border: none;
-            flex-grow: 1; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 0 10px rgba(0, 136, 204, 0.3);
+            background: linear-gradient(135deg, #0088cc, #006699); color: white; border: none; flex-grow: 1; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 0 10px rgba(0, 136, 204, 0.3);
         }
         .info-btn { background: #28344c; color: #8fa0b5; border: none; padding: 12px 15px; border-radius: 8px; cursor: pointer; }
-
         #not-found { display: none; background: rgba(44, 31, 31, 0.5); border: 1px solid #ff4a4a; border-radius: 14px; padding: 20px; text-align: center; margin-top: 20px; }
         #not-found p { margin: 0 0 15px 0; color: #ff8484; font-weight: bold; }
         .clear-btn { background: #ff4a4a; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
-        /* ЭКРАН ЗАГРУЗКИ */
-        #redirect-screen {
-            display: none; position: relative; z-index: 2; text-align: center;
-            padding: 40px 20px; margin-top: 50px;
-        }
-
+        
+        #redirect-screen { display: none; position: relative; z-index: 2; text-align: center; padding: 40px 20px; margin-top: 50px; }
         .loader-ring {
-            display: inline-block; width: 80px; height: 80px;
-            border: 4px solid rgba(0, 136, 204, 0.1); border-radius: 50%;
-            border-top-color: #00c6ff; animation: spin 1s linear infinite;
-            margin-bottom: 25px; box-shadow: 0 0 15px rgba(0, 198, 255, 0.2);
+            display: inline-block; width: 80px; height: 80px; border: 4px solid rgba(0, 136, 204, 0.1); border-radius: 50%; border-top-color: #00c6ff; animation: spin 1s linear infinite; margin-bottom: 25px; box-shadow: 0 0 15px rgba(0, 198, 255, 0.2);
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        .countdown {
-            font-size: 48px; font-weight: 800; color: #00c6ff;
-            margin-bottom: 15px; text-shadow: 0 0 15px rgba(0, 198, 255, 0.6);
-        }
+        .countdown { font-size: 48px; font-weight: 800; color: #00c6ff; margin-bottom: 15px; text-shadow: 0 0 15px rgba(0, 198, 255, 0.6); }
         .redirect-text { font-size: 16px; color: #ffffff; margin-bottom: 10px; font-weight: 600; }
         .redirect-subtext { font-size: 13px; color: #8fa0b5; max-width: 280px; margin: 0 auto; line-height: 1.5; margin-bottom: 30px; }
-
-        /* КНОПКА ФИНАЛЬНОГО ПЕРЕХОДА */
         .action-link-btn {
-            display: none; background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: white; border: none; padding: 15px 30px; font-size: 16px;
-            font-weight: bold; border-radius: 10px; cursor: pointer;
-            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4); animation: scaleUp 0.3s ease;
+            display: none; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; border: none; padding: 15px 30px; font-size: 16px; font-weight: bold; border-radius: 10px; cursor: pointer; box-shadow: 0 0 15px rgba(46, 204, 113, 0.4); animation: scaleUp 0.3s ease;
         }
         @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
@@ -134,7 +80,7 @@
         </div>
 
         <div class="search-container">
-            <input type="text" id="search" class="search-input" placeholder="🔍 Поиск софта по названию..." oninput="searchCheats()">
+            <input type="text" id="search" class="search-input" placeholder="🔍 Поиск софта по названию...">
         </div>
 
         <div class="tabs" id="tabs-bar">
@@ -180,16 +126,11 @@
         </div>
     </div>
 
-    <!-- ЭКРАН ТАЙМЕРА -->
-    <!-- ЭКРАН ТАЙМЕРА -->
     <div id="redirect-screen">
         <div class="loader-ring" id="ring"></div>
         <div class="countdown" id="timer">5</div>
         <div class="redirect-text" id="status-title">Генерация безопасной ссылки...</div>
         <div class="redirect-subtext" id="status-desc">Пожалуйста, подождите. Проверяем файлы чит-мода на сервере на отсутствие вирусов.</div>
-        
-        <!-- КНОПКА ФИНАЛЬНОГО ПЕРЕХОДА (ТЕПЕРЬ ПРАВИЛЬНЫЙ ТЕГ) -->
-              <!-- КНОПКА ФИНАЛЬНОГО ПЕРЕХОДА -->
         <button id="final-action-btn" class="action-link-btn">🚀 СКАЧАТЬ ФАЙЛ</button>
     </div>
 
@@ -197,18 +138,18 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        // Дальше пойдет весь остальной разноцветный JavaScript код...
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
-let currentTab = 'pc';
-function switchTab(event, type) {
-currentTab = type;
-document.getElementById('btn-pc').classList.remove('active');
-document.getElementById('btn-phone').classList.remove('active');
-if (type === 'pc') document.getElementById('btn-pc').classList.add('active');
-else document.getElementById('btn-phone').classList.add('active');
-if(type === 'pc') {
+
+        let currentTab = 'pc';
+
+        function switchTab(event, type) {
+            currentTab = type;
+            document.getElementById('btn-pc').classList.remove('active');
+            document.getElementById('btn-phone').classList.remove('active');
+            
+            if (type === 'pc') document.getElementById('btn-pc').classList.add('active');
+            else document.getElementById('btn-phone').classList.add('active');
+            
+            if(type === 'pc') {
 document.getElementById('pc-section').classList.add('active');
 document.getElementById('phone-section').classList.remove('active');
 } else {
@@ -217,7 +158,6 @@ document.getElementById('pc-section').classList.remove('active');
 }
 searchCheats();
 }
-// ОБНОВЛЕННАЯ СИСТЕМА С КНОПКОЙ-ПОДТВЕРЖДЕНИЕМ
 function startRedirect(actionType, targetValue) {
 document.getElementById('main-interface').style.display = 'none';
 document.getElementById('redirect-screen').style.display = 'block';
@@ -228,14 +168,12 @@ timeLeft--;
 timerElement.innerText = timeLeft;
 if (timeLeft <= 0) {
 clearInterval(countdownInterval);
-// Когда время вышло, убираем кольцо загрузки и цифры, выкатываем кнопку
 document.getElementById('ring').style.display = 'none';
 timerElement.style.display = 'none';
 document.getElementById('status-title').innerText = "Ссылка успешно сгенерирована!";
 document.getElementById('status-desc').innerText = "Нажмите на кнопку ниже, чтобы запустить скачивание чит-файла.";
 const finalBtn = document.getElementById('final-action-btn');
 finalBtn.style.display = 'inline-block';
-// Вешаем на кнопку действие по клику (это обойдет любые блокировки Telegram)
 finalBtn.onclick = function() {
 if (actionType === 'bot_file') {
 tg.sendData("download_" + targetValue);
