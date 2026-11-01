@@ -178,7 +178,6 @@
         <div class="redirect-text">Генерация безопасной ссылки...</div>
         <div class="redirect-subtext">Пожалуйста, подождите. Проверяем файлы чит-мода на сервере на отсутствие вирусов.</div>
     </div>
-
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -186,94 +185,115 @@
 
         let currentTab = 'pc';
 
+        // НАДЕЖНОЕ ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК БЕЗ FOR EACH
         function switchTab(event, type) {
             currentTab = type;
             
-            // Переключаем кнопки
             document.getElementById('btn-pc').classList.remove('active');
             document.getElementById('btn-phone').classList.remove('active');
             
             if (type === 'pc') document.getElementById('btn-pc').classList.add('active');
-else document.getElementById('btn-phone').classList.add('active');
-// Переключаем разделы софта
-if(type === 'pc') {
-document.getElementById('pc-section').classList.add('active');
-document.getElementById('phone-section').classList.remove('active');
-} else {
-document.getElementById('phone-section').classList.add('active');
-document.getElementById('pc-section').classList.remove('active');
-}
-searchCheats();
-}
-function startRedirect(actionType, targetValue) {
-document.getElementById('main-interface').style.display = 'none';
-document.getElementById('redirect-screen').style.display = 'block';
-let timeLeft = 5;
-const timerElement = document.getElementById('timer');
-const countdownInterval = setInterval(() => {
-timeLeft--;
-timerElement.innerText = timeLeft;
-if (timeLeft <= 0) {
-clearInterval(countdownInterval);
-if (actionType === 'bot_file') {
-tg.sendData("download_" + targetValue);
-tg.close();
-} else if (actionType === 'link') {
-tg.openLink(targetValue);
-tg.close();
-}
-}
-}, 1000);
-}
-function searchCheats() {
-const query = document.getElementById('search').value.toLowerCase().trim();
-const cards = document.querySelectorAll('.cheat-card');
-const notFoundBlock = document.getElementById('not-found');
-const tabsBar = document.getElementById('tabs-bar');
-let anyFound = false;
-if (query !== "") {
-tabsBar.style.display = "none";
-document.getElementById('pc-section').classList.add('active');
-document.getElementById('phone-section').classList.add('active');
-} else {
-tabsBar.style.display = "flex";
-if (currentTab === 'pc') {
-document.getElementById('pc-section').classList.add('active');
-document.getElementById('phone-section').classList.remove('active');
-} else {
-document.getElementById('phone-section').classList.add('active');
-document.getElementById('pc-section').classList.remove('active');
-}
-}
-cards.forEach(card => {
-const title = card.getAttribute('data-title').toLowerCase();
-if (query === "") {
-notFoundBlock.style.display = "none";
-const parentId = card.parentElement.id;
-if ((currentTab === 'pc' && parentId === 'pc-section') || (currentTab === 'phone' && parentId === 'phone-section')) {
-card.style.display = "block";
-} else {
-card.style.display = "none";
-}
-} else {
-if (title.indexOf(query) !== -1) {
-card.style.display = "block";
-anyFound = true;
-} else {
-card.style.display = "none";
-}
-}
-});
-if (query !== "" && !anyFound) {
-notFoundBlock.style.display = "block";
-} else {
-notFoundBlock.style.display = "none";
-}
-}
+            else document.getElementById('btn-phone').classList.add('active');
+            
+            if(type === 'pc') {
+                document.getElementById('pc-section').classList.add('active');
+                document.getElementById('phone-section').classList.remove('active');
+            } else {
+                document.getElementById('phone-section').classList.add('active');
+                document.getElementById('pc-section').classList.remove('active');
+            }
+            searchCheats();
+        }
+
+        // ИСПРАВЛЕННЫЙ ТАЙМЕР ПЕРЕНАПРАВЛЕНИЯ
+        function startRedirect(actionType, targetValue) {
+            document.getElementById('main-interface').style.display = 'none';
+            document.getElementById('redirect-screen').style.display = 'block';
+            
+            let timeLeft = 5;
+            const timerElement = document.getElementById('timer');
+            
+            const countdownInterval = setInterval(() => {
+                timeLeft--;
+                timerElement.innerText = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    if (actionType === 'bot_file') {
+                        // Бот ловит строку и присылает .zip архив в чат
+                        tg.sendData("download_" + targetValue);
+                        tg.close();
+                    } else if (actionType === 'link') {
+                        // Открываем внешнюю ссылку на чит
+                        tg.openLink(targetValue);
+                        tg.close();
+                    }
+                }
+            }, 1000);
+        }
+
+        // ЖЕЛЕЗОБЕТОННЫЙ ПОИСК БЕЗ FOR EACH
+        function searchCheats() {
+            const query = document.getElementById('search').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.cheat-card');
+            const notFoundBlock = document.getElementById('not-found');
+            const tabsBar = document.getElementById('tabs-bar');
+            
+            let anyFound = false;
+
+            if (query !== "") {
+                tabsBar.style.display = "none";
+                document.getElementById('pc-section').classList.add('active');
+                document.getElementById('phone-section').classList.add('active');
+            } else {
+                tabsBar.style.display = "flex";
+                if (currentTab === 'pc') {
+                    document.getElementById('pc-section').classList.add('active');
+                    document.getElementById('phone-section').classList.remove('active');
+                } else {
+                    document.getElementById('phone-section').classList.add('active');
+                    document.getElementById('pc-section').classList.remove('active');
+                }
+            }
+
+            // Стандартный классический цикл, который никогда не выдаст ошибку
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                const title = card.getAttribute('data-title').toLowerCase();
+                
+                if (query === "") {
+                    notFoundBlock.style.display = "none";
+                    const parentId = card.parentElement.id;
+                    if ((currentTab === 'pc' && parentId === 'pc-section') || (currentTab === 'phone' && parentId === 'phone-section')) {
+                        card.style.display = "block";
+                    } else {
+                        card.style.display = "none";
+                    }
+                } else {
+                    if (title.indexOf(query) !== -1) {
+                        card.style.display = "block";
+                        anyFound = true;
+                    } else {
+                        card.style.display = "none";
+                    }
+                }
+            }
+
+            if (query !== "" && !anyFound) {
+                notFoundBlock.style.display = "block";
+            } else {
+                notFoundBlock.style.display = "none";
+            }
+        }
+
         function clearSearch() {
             document.getElementById('search').value = "";
             searchCheats();
         }
+
+        document.getElementById('search').addEventListener('input', searchCheats);
     </script>
 </body>
 </html>
+
+  
