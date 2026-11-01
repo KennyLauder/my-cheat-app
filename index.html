@@ -178,7 +178,6 @@
         <div class="redirect-text">Генерация безопасной ссылки...</div>
         <div class="redirect-subtext">Пожалуйста, подождите. Проверяем файлы чит-мода на сервере на отсутствие вирусов.</div>
     </div>
-
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -186,94 +185,120 @@
 
         let currentTab = 'pc';
 
-        // ИСПРАВЛЕННАЯ ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК
+        // МАКСИМАЛЬНО ПРОСТАЯ И НАДЕЖНАЯ ФУНКЦИЯ ТАБОВ
         function switchTab(event, type) {
             currentTab = type;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-// Защита от падения, если event равен null (при сбросе поиска)
-if (event && event.currentTarget) {
-event.currentTarget.classList.add('active');
-} else {
-const btns = document.querySelectorAll('.tab-btn');
-if (type === 'pc') btns[0].classList.add('active');
-else btns[1].classList.add('active');
-}
-if(type === 'pc') {
-document.getElementById('pc-section').classList.add('active');
-} else {
-document.getElementById('phone-section').classList.add('active');
-}
-searchCheats();
-}
-function startRedirect(actionType, targetValue) {
-document.getElementById('main-interface').style.display = 'none';
-document.getElementById('redirect-screen').style.display = 'block';
-let timeLeft = 5;
-const timerElement = document.getElementById('timer');
-const countdownInterval = setInterval(() => {
-timeLeft--;
-timerElement.innerText = timeLeft;
-if (timeLeft <= 0) {
-clearInterval(countdownInterval);
-if (actionType === 'bot_file') {
-tg.sendData("download_" + targetValue);
-tg.close();
-} else if (actionType === 'link') {
-tg.openLink(targetValue);
-tg.close();
-}
-}
-}, 1000);
-}
-function searchCheats() {
-const searchInput = document.getElementById('search');
-if (!searchInput) return;
-const query = searchInput.value.toLowerCase().trim();
-const cards = document.querySelectorAll('.cheat-card');
-const notFoundBlock = document.getElementById('not-found');
-const tabsBar = document.getElementById('tabs-bar');
-let anyFound = false;
-if (query !== "") {
-tabsBar.style.display = "none";
-document.getElementById('pc-section').style.display = "block";
-document.getElementById('phone-section').style.display = "block";
-} else {
-tabsBar.style.display = "flex";
-document.getElementById('pc-section').style.display = "";
-document.getElementById('phone-section').style.display = "";
-}
-for (let i = 0; i < cards.length; i++) {
-const card = cards[i];
-const titleAttr = card.getAttribute('data-title');
-const title = titleAttr ? titleAttr.toLowerCase() : "";
-if (query === "") {
-notFoundBlock.style.display = "none";
-const parentId = card.parentElement.id;
-if ((currentTab === 'pc' && parentId === 'pc-section') || (currentTab === 'phone' && parentId === 'phone-section')) {
-card.style.display = "block";
-} else {
-card.style.display = "none";
-}
-} else {
-if (title.indexOf(query) !== -1) {
-card.style.display = "block";
-anyFound = true;
-} else {
-card.style.display = "none";
-}
-}
-}
-if (query !== "" && !anyFound) {
-notFoundBlock.style.display = "block";
-} else {
-notFoundBlock.style.display = "none";
-}
-}
-function clearSearch() {
-document.getElementById('search').value = "";
-switchTab(null, currentTab);
-}
+            
+            // Сбрасываем активные кнопки
+            const buttons = document.querySelectorAll('.tab-btn');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            
+            // Если нажали мышкой — подсвечиваем кнопку
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            } else {
+                // Если сбросили поиск — подсвечиваем нужную вкладку вручную
+                if (type === 'pc') buttons[0].classList.add('active');
+                else buttons[1].classList.add('active');
+            }
+            
+            // Переключаем видимость разделов
+            if (type === 'pc') {
+                document.getElementById('pc-section').classList.add('active');
+                document.getElementById('phone-section').classList.remove('active');
+            } else {
+                document.getElementById('phone-section').classList.add('active');
+                document.getElementById('pc-section').classList.remove('active');
+            }
+            
+            searchCheats();
+        }
+
+        // ТАЙМЕР ПЕРЕНАПРАВЛЕНИЯ
+        function startRedirect(actionType, targetValue) {
+            document.getElementById('main-interface').style.display = 'none';
+            document.getElementById('redirect-screen').style.display = 'block';
+            
+            let timeLeft = 5;
+            const timerElement = document.getElementById('timer');
+            
+            const countdownInterval = setInterval(() => {
+                timeLeft--;
+                timerElement.innerText = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    if (actionType === 'bot_file') {
+                        tg.sendData("download_" + targetValue);
+                        tg.close();
+                    } else if (actionType === 'link') {
+                        tg.openLink(targetValue);
+                        tg.close();
+                    }
+                }
+            }, 1000);
+        }
+
+        // ЖЕЛЕЗОБЕТОННЫЙ ПОИСК
+        function searchCheats() {
+            const searchInput = document.getElementById('search');
+            if (!searchInput) return;
+
+            const query = searchInput.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.cheat-card');
+            const notFoundBlock = document.getElementById('not-found');
+            const tabsBar = document.getElementById('tabs-bar');
+            
+            let anyFound = false;
+
+            if (query !== "") {
+                tabsBar.style.display = "none";
+                document.getElementById('pc-section').style.display = "block";
+                document.getElementById('phone-section').style.display = "block";
+            } else {
+                tabsBar.style.display = "flex";
+                document.getElementById('pc-section').style.display = "";
+                document.getElementById('phone-section').style.display = "";
+            }
+
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                const titleAttr = card.getAttribute('data-title');
+                const title = titleAttr ? titleAttr.toLowerCase() : "";
+                
+                if (query === "") {
+                    notFoundBlock.style.display = "none";
+                    const parentId = card.parentElement.id;
+                    if ((currentTab === 'pc' && parentId === 'pc-section') || (currentTab === 'phone' && parentId === 'phone-section')) {
+                        card.style.display = "block";
+                    } else {
+                        card.style.display = "none";
+                    }
+                } else {
+                    if (title.indexOf(query) !== -1) {
+                        card.style.display = "block";
+                        anyFound = true;
+                    } else {
+                        card.style.display = "none";
+                    }
+                }
+            }
+
+            if (query !== "" && !anyFound) {
+                notFoundBlock.style.display = "block";
+            } else {
+                notFoundBlock.style.display = "none";
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('search').value = "";
+            switchTab(null, currentTab);
+        }
+
+        // Навешиваем событие поиска
         document.getElementById('search').addEventListener('input', searchCheats);
     </script>
 </body>
