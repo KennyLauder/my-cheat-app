@@ -94,12 +94,11 @@
         #not-found p { margin: 0 0 15px 0; color: #ff8484; font-weight: bold; }
         .clear-btn { background: #ff4a4a; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* ОКНО ПЕРЕНАПРАВЛЕНИЯ */
+        /* ЭКРАН ЗАГРУЗКИ */
         #redirect-screen {
             display: none; position: relative; z-index: 2; text-align: center;
-            padding: 40px 20px; margin-top: 50px; animation: scaleUp 0.3s ease;
+            padding: 40px 20px; margin-top: 50px;
         }
-        @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .loader-ring {
             display: inline-block; width: 80px; height: 80px;
@@ -114,7 +113,16 @@
             margin-bottom: 15px; text-shadow: 0 0 15px rgba(0, 198, 255, 0.6);
         }
         .redirect-text { font-size: 16px; color: #ffffff; margin-bottom: 10px; font-weight: 600; }
-        .redirect-subtext { font-size: 13px; color: #8fa0b5; max-width: 280px; margin: 0 auto; line-height: 1.5; }
+        .redirect-subtext { font-size: 13px; color: #8fa0b5; max-width: 280px; margin: 0 auto; line-height: 1.5; margin-bottom: 30px; }
+
+        /* КНОПКА ФИНАЛЬНОГО ПЕРЕХОДА */
+        .action-link-btn {
+            display: none; background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white; border: none; padding: 15px 30px; font-size: 16px;
+            font-weight: bold; border-radius: 10px; cursor: pointer;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.4); animation: scaleUp 0.3s ease;
+        }
+        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -172,128 +180,119 @@
         </div>
     </div>
 
+    <!-- ЭКРАН ТАЙМЕРА -->
+    <!-- ЭКРАН ТАЙМЕРА -->
     <div id="redirect-screen">
-        <div class="loader-ring"></div>
+        <div class="loader-ring" id="ring"></div>
         <div class="countdown" id="timer">5</div>
-        <div class="redirect-text">Генерация безопасной ссылки...</div>
-        <div class="redirect-subtext">Пожалуйста, подождите. Проверяем файлы чит-мода на сервере на отсутствие вирусов.</div>
+        <div class="redirect-text" id="status-title">Генерация безопасной ссылки...</div>
+        <div class="redirect-subtext" id="status-desc">Пожалуйста, подождите. Проверяем файлы чит-мода на сервере на отсутствие вирусов.</div>
+        
+        <!-- КНОПКА ФИНАЛЬНОГО ПЕРЕХОДА (ТЕПЕРЬ ПРАВИЛЬНЫЙ ТЕГ) -->
+        <button id="final-action-btn" class="action-link-btn">🚀 СКАЧАТЬ ФАЙЛ</button>
     </div>
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
 
-        let currentTab = 'pc';
-
-        // НАДЕЖНОЕ ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК БЕЗ FOR EACH
-        function switchTab(event, type) {
-            currentTab = type;
-            
-            document.getElementById('btn-pc').classList.remove('active');
-            document.getElementById('btn-phone').classList.remove('active');
-            
-            if (type === 'pc') document.getElementById('btn-pc').classList.add('active');
-            else document.getElementById('btn-phone').classList.add('active');
-            
-            if(type === 'pc') {
-                document.getElementById('pc-section').classList.add('active');
-                document.getElementById('phone-section').classList.remove('active');
-            } else {
-                document.getElementById('phone-section').classList.add('active');
-                document.getElementById('pc-section').classList.remove('active');
-            }
-            searchCheats();
-        }
-
-        // ИСПРАВЛЕННЫЙ ТАЙМЕР ПЕРЕНАПРАВЛЕНИЯ
-        function startRedirect(actionType, targetValue) {
-            document.getElementById('main-interface').style.display = 'none';
-            document.getElementById('redirect-screen').style.display = 'block';
-            
-            let timeLeft = 5;
-            const timerElement = document.getElementById('timer');
-            
-            const countdownInterval = setInterval(() => {
-                timeLeft--;
-                timerElement.innerText = timeLeft;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    if (actionType === 'bot_file') {
-                        // Бот ловит строку и присылает .zip архив в чат
-                        tg.sendData("download_" + targetValue);
-                        tg.close();
-                    } else if (actionType === 'link') {
-                        // Открываем внешнюю ссылку на чит
-                        tg.openLink(targetValue);
-                        tg.close();
-                    }
-                }
-            }, 1000);
-        }
-
-        // ЖЕЛЕЗОБЕТОННЫЙ ПОИСК БЕЗ FOR EACH
-        function searchCheats() {
-            const query = document.getElementById('search').value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.cheat-card');
-            const notFoundBlock = document.getElementById('not-found');
-            const tabsBar = document.getElementById('tabs-bar');
-            
-            let anyFound = false;
-
-            if (query !== "") {
-                tabsBar.style.display = "none";
-                document.getElementById('pc-section').classList.add('active');
-                document.getElementById('phone-section').classList.add('active');
-            } else {
-                tabsBar.style.display = "flex";
-                if (currentTab === 'pc') {
-                    document.getElementById('pc-section').classList.add('active');
-                    document.getElementById('phone-section').classList.remove('active');
-                } else {
-                    document.getElementById('phone-section').classList.add('active');
-                    document.getElementById('pc-section').classList.remove('active');
-                }
-            }
-
-            // Стандартный классический цикл, который никогда не выдаст ошибку
-            for (let i = 0; i < cards.length; i++) {
-                const card = cards[i];
-                const title = card.getAttribute('data-title').toLowerCase();
-                
-                if (query === "") {
-                    notFoundBlock.style.display = "none";
-                    const parentId = card.parentElement.id;
-                    if ((currentTab === 'pc' && parentId === 'pc-section') || (currentTab === 'phone' && parentId === 'phone-section')) {
-                        card.style.display = "block";
-                    } else {
-                        card.style.display = "none";
-                    }
-                } else {
-                    if (title.indexOf(query) !== -1) {
-                        card.style.display = "block";
-                        anyFound = true;
-                    } else {
-                        card.style.display = "none";
-                    }
-                }
-            }
-
-            if (query !== "" && !anyFound) {
-                notFoundBlock.style.display = "block";
-            } else {
-                notFoundBlock.style.display = "none";
-            }
-        }
-
+        
+        <!-- Сюда встанет кнопка клика после таймера -->
+const tg = window.Telegram.WebApp;
+tg.ready();
+tg.expand();
+let currentTab = 'pc';
+function switchTab(event, type) {
+currentTab = type;
+document.getElementById('btn-pc').classList.remove('active');
+document.getElementById('btn-phone').classList.remove('active');
+if (type === 'pc') document.getElementById('btn-pc').classList.add('active');
+else document.getElementById('btn-phone').classList.add('active');
+if(type === 'pc') {
+document.getElementById('pc-section').classList.add('active');
+document.getElementById('phone-section').classList.remove('active');
+} else {
+document.getElementById('phone-section').classList.add('active');
+document.getElementById('pc-section').classList.remove('active');
+}
+searchCheats();
+}
+// ОБНОВЛЕННАЯ СИСТЕМА С КНОПКОЙ-ПОДТВЕРЖДЕНИЕМ
+function startRedirect(actionType, targetValue) {
+document.getElementById('main-interface').style.display = 'none';
+document.getElementById('redirect-screen').style.display = 'block';
+let timeLeft = 5;
+const timerElement = document.getElementById('timer');
+const countdownInterval = setInterval(() => {
+timeLeft--;
+timerElement.innerText = timeLeft;
+if (timeLeft <= 0) {
+clearInterval(countdownInterval);
+// Когда время вышло, убираем кольцо загрузки и цифры, выкатываем кнопку
+document.getElementById('ring').style.display = 'none';
+timerElement.style.display = 'none';
+document.getElementById('status-title').innerText = "Ссылка успешно сгенерирована!";
+document.getElementById('status-desc').innerText = "Нажмите на кнопку ниже, чтобы запустить скачивание чит-файла.";
+const finalBtn = document.getElementById('final-action-btn');
+finalBtn.style.display = 'inline-block';
+// Вешаем на кнопку действие по клику (это обойдет любые блокировки Telegram)
+finalBtn.onclick = function() {
+if (actionType === 'bot_file') {
+tg.sendData("download_" + targetValue);
+tg.close();
+} else if (actionType === 'link') {
+tg.openLink(targetValue);
+tg.close();
+}
+};
+}
+}, 1000);
+}
+function searchCheats() {
+const query = document.getElementById('search').value.toLowerCase().trim();
+const cards = document.querySelectorAll('.cheat-card');
+const notFoundBlock = document.getElementById('not-found');
+const tabsBar = document.getElementById('tabs-bar');
+let anyFound = false;
+if (query !== "") {
+tabsBar.style.display = "none";
+document.getElementById('pc-section').classList.add('active');
+document.getElementById('phone-section').classList.add('active');
+} else {
+tabsBar.style.display = "flex";
+if (currentTab === 'pc') {
+document.getElementById('pc-section').classList.add('active');
+document.getElementById('phone-section').classList.remove('active');
+} else {
+document.getElementById('phone-section').classList.add('active');
+document.getElementById('pc-section').classList.remove('active');
+}
+}
+cards.forEach(card => {
+const title = card.getAttribute('data-title').toLowerCase();
+if (query === "") {
+notFoundBlock.style.display = "none";
+const parentId = card.parentElement.id;
+if ((currentTab === 'pc' && parentId === 'pc-section') || (currentTab === 'phone' && parentId === 'phone-section')) {
+card.style.display = "block";
+} else {
+card.style.display = "none";
+}
+} else {
+if (title.indexOf(query) !== -1) {
+card.style.display = "block";
+anyFound = true;
+} else {
+card.style.display = "none";
+}
+}
+});
+if (query !== "" && !anyFound) {
+notFoundBlock.style.display = "block";
+} else {
+notFoundBlock.style.display = "none";
+}
+}
         function clearSearch() {
             document.getElementById('search').value = "";
             searchCheats();
         }
-
-        document.getElementById('search').addEventListener('input', searchCheats);
     </script>
 </body>
 </html>
-
-  
