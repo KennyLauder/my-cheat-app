@@ -42,7 +42,6 @@
             position: relative; z-index: 2;
         }
         
-        /* ГЛАВНЫЙ ИНТЕРФЕЙС (КОНТЕЙНЕР) */
         #main-interface { display: block; }
 
         .header {
@@ -97,13 +96,8 @@
 
         /* ОКНО КРАСИВОГО ПЕРЕНАПРАВЛЕНИЯ */
         #redirect-screen {
-            display: none;
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: 40px 20px;
-            margin-top: 50px;
-            animation: scaleUp 0.3s ease;
+            display: none; position: relative; z-index: 2; text-align: center;
+            padding: 40px 20px; margin-top: 50px; animation: scaleUp 0.3s ease;
         }
         @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
@@ -125,7 +119,6 @@
 </head>
 <body>
 
-    <!-- 1. ГЛАВНЫЙ ИНТЕРФЕЙС -->
     <div id="main-interface">
         <div class="header">
             <h1>KennyHack Космос</h1>
@@ -146,14 +139,12 @@
             <button class="clear-btn" onclick="clearSearch()">✖ Сбросить поиск</button>
         </div>
 
-        <!-- Раздел ПК -->
         <div id="pc-section" class="content-section active">
             <div class="cheat-card" data-title="Granny PC Mod Menu">
                 <span class="status-badge status-online">● РАБОТАЕТ (Патч 2026)</span>
                 <div class="cheat-title">Granny PC Mod Menu</div>
                 <div class="cheat-desc">Полный набор функций: Режим бога, изменение скорости, спавн предметов.</div>
                 <div class="btn-group">
-                    <!-- Запускаем редирект с типом 'bot_file' и передаем имя софта -->
                     <button class="download-btn" onclick="startRedirect('bot_file', 'Granny PC')">Скачать софт</button>
                     <button class="info-btn" onclick="alert('Инструкция:\n1. Скачай архив\n2. Распакуй в папку игры\n3. Клавиша активации: F1')">❓</button>
                 </div>
@@ -169,21 +160,18 @@
             </div>
         </div>
 
-        <!-- Раздел Телефон -->
         <div id="phone-section" class="content-section">
             <div class="cheat-card" data-title="Granny Android Cheat APK">
                 <span class="status-badge status-online">● РАБОТАЕТ (Android)</span>
                 <div class="cheat-title">Granny Android Cheat APK</div>
                 <div class="cheat-desc">Взломанный .apk установщик со встроенным чит-меню.</div>
                 <div class="btn-group">
-                    <!-- Передаем тип 'link' и саму внешнюю ссылку -->
                     <button class="download-btn" onclick="startRedirect('link', 'https://your-download-link.com')">Получить ссылку</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 2. СТИЛЬНОЕ ОКНО ПЕРЕНАПРАВЛЕНИЯ -->
     <div id="redirect-screen">
         <div class="loader-ring"></div>
         <div class="countdown" id="timer">5</div>
@@ -196,12 +184,21 @@
         tg.ready();
         tg.expand();
 
-let currentTab = 'pc';
-function switchTab(event, type) {
-currentTab = type;
-document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-if (event) event.currentTarget.classList.add('active');
+        let currentTab = 'pc';
+
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК
+        function switchTab(event, type) {
+            currentTab = type;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+// Защита от падения, если event равен null (при сбросе поиска)
+if (event && event.currentTarget) {
+event.currentTarget.classList.add('active');
+} else {
+const btns = document.querySelectorAll('.tab-btn');
+if (type === 'pc') btns[0].classList.add('active');
+else btns[1].classList.add('active');
+}
 if(type === 'pc') {
 document.getElementById('pc-section').classList.add('active');
 } else {
@@ -209,9 +206,7 @@ document.getElementById('phone-section').classList.add('active');
 }
 searchCheats();
 }
-// СИСТЕМА КРАСИВОГО ПЕРЕНАПРАВЛЕНИЯ С ТАЙМЕРОМ
 function startRedirect(actionType, targetValue) {
-// Прячем главный интерфейс и выкатываем экран загрузки
 document.getElementById('main-interface').style.display = 'none';
 document.getElementById('redirect-screen').style.display = 'block';
 let timeLeft = 5;
@@ -221,13 +216,10 @@ timeLeft--;
 timerElement.innerText = timeLeft;
 if (timeLeft <= 0) {
 clearInterval(countdownInterval);
-// Время вышло — выполняем перенаправление в зависимости от типа
 if (actionType === 'bot_file') {
-// Шлем команду боту (он выдаст .zip из папки)
 tg.sendData("download_" + targetValue);
 tg.close();
 } else if (actionType === 'link') {
-// Открываем внешнюю ссылку на скачивание и закрываем аппку
 tg.openLink(targetValue);
 tg.close();
 }
@@ -282,6 +274,4 @@ function clearSearch() {
 document.getElementById('search').value = "";
 switchTab(null, currentTab);
 }
-document.getElementById('search').addEventListener('keyup', searchCheats);
-document.getElementById('search').addEventListener('paste', searchCheats);
-
+document.getElementById('search').addEventListener('input', searchCheats);
