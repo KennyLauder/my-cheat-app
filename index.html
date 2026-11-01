@@ -189,11 +189,15 @@
         <div class="redirect-subtext" id="status-desc">Пожалуйста, подождите. Проверяем файлы чит-мода на сервере на отсутствие вирусов.</div>
         
         <!-- КНОПКА ФИНАЛЬНОГО ПЕРЕХОДА (ТЕПЕРЬ ПРАВИЛЬНЫЙ ТЕГ) -->
+              <!-- КНОПКА ФИНАЛЬНОГО ПЕРЕХОДА -->
         <button id="final-action-btn" class="action-link-btn">🚀 СКАЧАТЬ ФАЙЛ</button>
     </div>
 
-        
-        <!-- Сюда встанет кнопка клика после таймера -->
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        // Дальше пойдет весь остальной разноцветный JavaScript код...
 const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
